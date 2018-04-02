@@ -4,7 +4,13 @@ import {FilmsSchema} from './schemas.mjs';
 export default class Films {
 	constructor(data){
 		this._data = data;
+		try {
+			this.Film = mongoose.model('Film');
+		}
+		catch (err) {
+		// The `Film` model doesn't exist, so need to create it
 		this.Film = mongoose.model('Film', FilmsSchema);
+		}
 	}
 	
 	save() {
