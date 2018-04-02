@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
+
  
 const CinemasSchema = new Schema({
 	_id: ObjectId,
@@ -17,7 +18,7 @@ const HallsSchema = new Schema({
 	cimemas: [{type:ObjectId, ref: 'Cinema'}]
 });
 
-const MoviesSchema = new Schema({
+const FilmsSchema = new Schema({
 	_id: ObjectId,
 	name: String,
 	year: Number,
@@ -27,9 +28,9 @@ const MoviesSchema = new Schema({
 
 const ShowsSchema = new Schema({
 	_id: ObjectId,
-	startAt: DataTime,
-	movies: [{type:ObjectId, ref: 'Movie'}],
-	hallss: [{type:ObjectId, ref: 'Hall'}],
+	startAt: Date,
+	film: {type:ObjectId, ref: 'Film'},
+	hall: {type:ObjectId, ref: 'Hall'}
 });
 
-export {CimemasSchema, HallsSchema, moviesSchema, showsSchema};
+export {CinemasSchema, HallsSchema, FilmsSchema, ShowsSchema};
