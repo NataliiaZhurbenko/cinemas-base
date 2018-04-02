@@ -29,4 +29,15 @@ export default class Films {
 			}
 		});
 	}
+	
+	into(res) {
+		this.Film.find({}, (err, films) => {
+			if (err) {
+				res.send('No data found');
+			}
+			else {
+				res.json(films);
+			}
+		});
+	}
 }

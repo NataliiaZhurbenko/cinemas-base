@@ -9,8 +9,9 @@ new Connection();
 // create application/json parser
 let jsonParser = bodyParser.json();
 
-app.get('/', (req, res)  => {
-	res.send('Hello World!');
+app.get('/films', (req, res)  => {
+	let films = new Films();
+	films.into(res);
 });
 
 app.post('/films', jsonParser, (req, res) => {
