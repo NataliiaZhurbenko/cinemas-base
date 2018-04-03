@@ -1,20 +1,13 @@
 import mongoose from 'mongoose';
-import {ShowsSchema} from './schemas.mjs';
+import {Show} from './models.mjs';
 
 export default class Shows {
 	constructor(data=null){
 		this._data = data;
-		try {
-			this.Show = mongoose.model('Show');
-		}
-		catch (err) {
-		// The `Show` model doesn't exist, so need to create it
-		this.Show = mongoose.model('Show', ShowsSchema);
-		}
 	}
 	
 	save() {
-		let show = new this.Show({
+		let show = new Show({
 			_id: new mongoose.Types.ObjectId(),
 			startAt: Date.parse(this._data.startAt)
 		});
@@ -29,7 +22,7 @@ export default class Shows {
 	}
 	
 	into(res) {
-		this.Show.find({}, (err, shows) => {
+		Show.find({}, (err, shows) => {
 			if (err) {
 				res.send('No data found');
 			}

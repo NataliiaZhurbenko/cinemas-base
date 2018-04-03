@@ -1,20 +1,14 @@
 import mongoose from 'mongoose';
-import {CinemasSchema} from './schemas.mjs';
+import {Cinema} from './models.mjs';
 
 export default class Cinemas {
 	constructor(data=null){
 		this._data = data;
-		try {
-			this.Cinema = mongoose.model('Cinema');
-		}
-		catch (err) {
-		// The `Cinema` model doesn't exist, so need to create it
-		this.Cinema = mongoose.model('Cinema', CinemasSchema);
-		}
 	}
+
 	
 	save() {
-		let cinema = new this.Cinema({
+		let cinema = new Cinema({
 			_id: new mongoose.Types.ObjectId(),
 			name: this._data.name,
 			city: this._data.city,
@@ -31,7 +25,7 @@ export default class Cinemas {
 	}
 	
 	into(res) {
-		this.Cinema.find({}).populate('halls').exec((err, cinemas) => {
+		Cinema.find({}).populate('halls').exec((err, cinemas) => {
 			if (err) {
 				res.send('No data found');
 			}

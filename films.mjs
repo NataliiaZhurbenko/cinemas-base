@@ -1,20 +1,13 @@
 import mongoose from 'mongoose';
-import {FilmsSchema} from './schemas.mjs';
+import {Film} from './models.mjs';
 
 export default class Films {
 	constructor(data){
 		this._data = data;
-		try {
-			this.Film = mongoose.model('Film');
-		}
-		catch (err) {
-		// The `Film` model doesn't exist, so need to create it
-		this.Film = mongoose.model('Film', FilmsSchema);
-		}
 	}
 	
 	save() {
-		let film = new this.Film({
+		let film = new Film({
 			_id: new mongoose.Types.ObjectId(),
 			name: this._data.name,
 			year: this._data.year,
@@ -31,7 +24,7 @@ export default class Films {
 	}
 	
 	into(res) {
-		this.Film.find({}, (err, films) => {
+		Film.find({}, (err, films) => {
 			if (err) {
 				res.send('No data found');
 			}
