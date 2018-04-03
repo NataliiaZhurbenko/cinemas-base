@@ -30,7 +30,8 @@ export default class Cinemas {
 	}
 	
 	into(res) {
-		this.Cinema.find({}, (err, cinemas) => {
+		this.Hall.find({}).populate('cinema').exec((err, halls)
+		this.Cinema.find({}).populate('halls') exec((err, cinemas) => {
 			if (err) {
 				res.send('No data found');
 			}

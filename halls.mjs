@@ -8,8 +8,16 @@ export default class Halls {
 			this.Hall = mongoose.model('Hall');
 		}
 		catch (err) {
-		// The `Hall` model doesn't exist, so need to create it
-		this.Hall = mongoose.model('Hall', HallsSchema);
+			// The `Hall` model doesn't exist, so need to create it
+			this.Hall = mongoose.model('Hall', HallsSchema);
+		}
+
+		try {
+			this.Cinema = mongoose.model('Cinema');
+		}
+		catch (err) {
+			// The `Cinema` model doesn't exist, so need to create it
+			this.Cinema = mongoose.model('Cinema', CinemasSchema);
 		}
 	}
 	
@@ -17,20 +25,29 @@ export default class Halls {
 		let hall = new this.Hall({
 			_id: new mongoose.Types.ObjectId(),
 			name: this._data.name,
-			capacity: this._data.capacity
+			capacity: this._data.capacity,
+			cinema: this._data.cinema
 		});
 		
 		hall.save((err) => {
 			if (err) {
 				console.log(err);
 			} else {
-				console.log("Successfully saved in DB")
+				this.Cinema.findById(this._data.cinema, (err, cinema) => {
+					if (cinema.halls typeof Array) {
+					 cinema.halls.push(hall._id);
+					}
+					else {
+					 cinema.halls = [hall._id];
+					}
+					cinema.save();
+					});
 			}
 		});
 	}
 	
 	into(res) {
-		this.Hall.find({}, (err, halls) => {
+		this.Hall.find({}).populate('cinema').exec((err, halls)) => {
 			if (err) {
 				res.send('No data found');
 			}
