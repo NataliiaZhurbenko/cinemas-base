@@ -34,20 +34,15 @@ export default class Halls {
 				console.log(err);
 			} else {
 				this.Cinema.findById(this._data.cinema, (err, cinema) => {
-					if (cinema.halls typeof Array) {
-					 cinema.halls.push(hall._id);
-					}
-					else {
-					 cinema.halls = [hall._id];
-					}
+					cinema.halls.push(hall._id);
 					cinema.save();
-					});
+				});
 			}
 		});
 	}
 	
 	into(res) {
-		this.Hall.find({}).populate('cinema').exec((err, halls)) => {
+		this.Hall.find({}).populate('cinema').exec((err, halls) => {
 			if (err) {
 				res.send('No data found');
 			}

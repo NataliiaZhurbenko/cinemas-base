@@ -17,7 +17,8 @@ export default class Cinemas {
 		let cinema = new this.Cinema({
 			_id: new mongoose.Types.ObjectId(),
 			name: this._data.name,
-			city: this._data.city
+			city: this._data.city,
+			halls: []
 		});
 		
 		cinema.save((err) => {
@@ -30,7 +31,7 @@ export default class Cinemas {
 	}
 	
 	into(res) {
-		this.Cinema.find({}).populate('halls') exec((err, cinemas) => {
+		this.Cinema.find({}).populate('halls').exec((err, cinemas) => {
 			if (err) {
 				res.send('No data found');
 			}
