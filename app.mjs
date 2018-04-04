@@ -41,8 +41,8 @@ app.post('/halls', jsonParser, (req, res) => {
 })
 
 app.get('/cinemas', (req, res)  => {
-	let cinemas = new Cinemas( );
-	cinemas.into(res);
+	let cinemas = new Cinemas( res);
+	cinemas.into();
 });
 
 app.post('/cinemas', jsonParser, (req, res) => {
@@ -50,8 +50,8 @@ app.post('/cinemas', jsonParser, (req, res) => {
 		return res.sendStatus(400)
 	}
 	
-	let cinemas = new Cinemas(req.body);
-	
+	let cinemas = new Cinemas(res, req.body);
+	cinemas.save();
 	try {
 		cinemas.save();
 		//res.send('Cinema successfully saved to DB')

@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 import {Cinema} from './models.mjs';
 
 export default class Cinemas {
-	constructor(data=null){
+	constructor(res, data=null){
 		this._data = data;
+		this._res = res;
+		
 	}
-
 	
 	save() {
 		let cinema = new Cinema({
@@ -17,20 +18,21 @@ export default class Cinemas {
 		
 		cinema.save((err) => {
 			if (err) {
-				console.log(err);
+				this._res.send("Error occured");
+				// TODO: Need to send error to log
 			} else {
-				console.log("Cinema Successfully saved in DB")
+				this._res.send("Cinema successfully saved in DB")
 			}
 		});
 	}
 	
-	into(res) {
+	into() {
 		Cinema.find({}).populate('halls').exec((err, cinemas) => {
 			if (err) {
-				res.send('No data found');
+				this._res.send('No data found');
 			}
 			else {
-				res.json(cinemas);
+				this._res.json(cinemas);
 			}
 		});
 	}
