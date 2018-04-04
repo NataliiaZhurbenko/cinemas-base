@@ -55,7 +55,7 @@ app.post('/cinemas', jsonParser, (req, res) => {
 
 app.get('/shows', (req, res)  => {
 	let shows = new Shows(res);
-	shows.into();
+	shows.filter(req.query);
 });
 
 

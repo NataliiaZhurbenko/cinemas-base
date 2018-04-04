@@ -56,13 +56,21 @@ export default class Shows {
 		})
 	}
 	
-	into() {
-		Show.find({}).select('-__v').populate('film', 'name').populate('hall', 'name').exec((err, shows) => {
+	filter(params) {
+		const hallId = params.hall;
+		const filter = (hallId ? {hall: hallId} : {});
+		Show.find(filter).select('-__v').populate('film', 'name').populate('hall', 'name').exec((err, shows) => {
 			if (err) {
 				this._res.send('No data found');
 			}
 			else {
-				this._res.json(shows);
+				const date = new Date(params.date);
+				const result = shows.filter((show) => {
+				return (show.startAt.getYear() == date.getYear()) &&
+				(show.startAt.getMonth() == date.getMonth()) &&
+				(show.startAt.getDay() == date.getDay());
+				});
+				this._res.json(result);
 			}
 		});
 	}
