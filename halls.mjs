@@ -3,8 +3,9 @@ import {HallsSchema, CinemasSchema} from './schemas.mjs';
 import {Hall, Cinema} from './models.mjs';
 
 export default class Halls {
-	constructor(data=null){
+	constructor(res, data=null){
 		this._data = data;
+		this._res = res;
 	}
 
 	save() {
@@ -14,26 +15,39 @@ export default class Halls {
 			capacity: this._data.capacity,
 			cinema: this._data.cinema
 		});
-		
+
 		hall.save((err) => {
 			if (err) {
-				console.log(err);
+				this._res.send("Error occured");
+				// TODO: Need to send error to log
 			} else {
 				Cinema.findById(this._data.cinema, (err, cinema) => {
-					cinema.halls.push(hall._id);
-					cinema.save();
+					if (err) {
+						this._res.send("Error occured");
+						// TODO: Need to send error to log
+					} else {
+						cinema.halls.push(hall._id);
+						cinema.save((err) => {
+							if (err) {
+								this._res.send("Error occured");
+								// TODO: Need to send error to log
+							} else {
+								this._res.send("Hall was successfully saved");
+							}
+						});
+					}
 				});
 			}
 		});
 	}
-	
-	into(res) {
+
+	into() {
 		Hall.find({}).populate('cinema').exec((err, halls) => {
 			if (err) {
-				res.send('No data found');
+				this._res.send('No data found');
 			}
 			else {
-				res.json(halls);
+				this._res.json(halls);
 			}
 		});
 	}
