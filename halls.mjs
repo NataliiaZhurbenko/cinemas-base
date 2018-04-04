@@ -41,8 +41,10 @@ export default class Halls {
 		});
 	}
 
-	into() {
-		Hall.find({}).select('-__v').populate('cinema', 'name').exec((err, halls) => {
+	filter(params) {
+		const cinemaId = params.cinema;
+		const filter = (cinemaId ? {cinema: cinemaId} : {});
+		Hall.find({filter}).select('-__v').populate('cinema', 'name').exec((err, halls) => {
 			if (err) {
 				this._res.send('No data found');
 			}

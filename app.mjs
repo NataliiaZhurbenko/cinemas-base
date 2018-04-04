@@ -27,9 +27,9 @@ app.post('/films', jsonParser, (req, res) => {
 	res.end();
 })
 
-app.get('/halls', (req, res)  => {
-	let halls = new Halls( res);
-	halls.into();
+app.get('/halls', (req, res) => {
+	let halls = new Halls(res);
+	halls.filter(req.query);
 });
 
 app.post('/halls', jsonParser, (req, res) => {
@@ -49,7 +49,6 @@ app.post('/cinemas', jsonParser, (req, res) => {
 	if (!req.body) {
 		return res.sendStatus(400)
 	}
-	
 	let cinemas = new Cinemas(res, req.body);
 	cinemas.save();
 })
@@ -58,6 +57,7 @@ app.get('/shows', (req, res)  => {
 	let shows = new Shows(res);
 	shows.into();
 });
+
 
 app.post('/shows', jsonParser, (req, res) => {
 	if (!req.body) {
