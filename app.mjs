@@ -15,7 +15,7 @@ let jsonParser = bodyParser.json();
 
 app.get('/films', (req, res)  => {
 	let films = new Films(res);
-	films.into();
+	films.fetch();
 });
 
 app.post('/films', jsonParser, (req, res) => {
@@ -42,7 +42,7 @@ app.post('/halls', jsonParser, (req, res) => {
 
 app.get('/cinemas', (req, res)  => {
 	let cinemas = new Cinemas(res);
-	cinemas.into();
+	cinemas.fetch();
 });
 
 app.post('/cinemas', jsonParser, (req, res) => {
@@ -66,6 +66,16 @@ app.post('/shows', jsonParser, (req, res) => {
 	let shows = new Shows(res, req.body);
 	shows.save();
 })
+
+app.use((err, req, res, next) => {
+	if (err instanceof SyntaxError) {
+		return res.status(400).send(
+			JSON.stringify({error: "The body of your request is not valid JSON!"})
+		);
+	}
+	console.error(err);
+	res.status(500).send();
+});
 
 app.listen(3000, () => {
 	console.log('Example app listening on port 3000!');

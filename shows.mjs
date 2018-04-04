@@ -59,19 +59,30 @@ export default class Shows {
 	filter(params) {
 		const hallId = params.hall;
 		const filter = (hallId ? {hall: hallId} : {});
-		Show.find(filter).select('-__v').populate('film', 'name').populate('hall', 'name').exec((err, shows) => {
-			if (err) {
-				this._res.send('No data found');
-			}
-			else {
-				const date = new Date(params.date);
-				const result = shows.filter((show) => {
-				return (show.startAt.getYear() == date.getYear()) &&
-				(show.startAt.getMonth() == date.getMonth()) &&
-				(show.startAt.getDay() == date.getDay());
-				});
-				this._res.json(result);
-			}
+		Show.find(filter).select('-__v').populate('film', 'name').populate('hall', 'name cinema')
+			.exec((err, shows) => {
+				if (err) {
+					this._res.send('No data found');
+				}
+				else {
+					let result = shows;
+					if (params.date) {
+						const date = new Date(params.date);
+						result = result.filter((show) => {
+							return (
+								(show.startAt.getYear() == date.getYear()) &&
+								(show.startAt.getMonth() == date.getMonth()) &&
+								(show.startAt.getDay() == date.getDay())
+							);
+						});
+					}
+					if (params.cinema) {
+						result = result.filter((show) => {
+							return (show.hall && (show.hall.cinema == params.cinema));
+						});
+					}
+					this._res.json(result);
+				}
 		});
 	}
 }

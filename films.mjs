@@ -27,7 +27,7 @@ export default class Films {
 		});
 	}
 	
-	into() {
+	fetch() {
 		Film.find({}).select('-__v').populate('shows', 'name').exec((err, films) => {
 			if (err) {
 				this._res.send('No data found');

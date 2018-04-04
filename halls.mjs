@@ -44,7 +44,7 @@ export default class Halls {
 	filter(params) {
 		const cinemaId = params.cinema;
 		const filter = (cinemaId ? {cinema: cinemaId} : {});
-		Hall.find(filter).select('-__v').populate('cinema', 'name').exec((err, halls) => {
+		Hall.find(filter).select('-__v').populate('cinema', 'name').populate('shows', 'startAt').exec((err, halls) => {
 			if (err) {
 				this._res.send('No data found');
 			}

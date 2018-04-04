@@ -26,7 +26,7 @@ export default class Cinemas {
 		});
 	}
 	
-	into() {
+	fetch() {
 		Cinema.find({}).select('-__v').populate('halls', 'name').exec((err, cinemas) => {
 			if (err) {
 				this._res.send('No data found');
