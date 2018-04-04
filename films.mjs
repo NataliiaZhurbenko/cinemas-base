@@ -2,8 +2,10 @@ import mongoose from 'mongoose';
 import {Film} from './models.mjs';
 
 export default class Films {
-	constructor(data){
+	constructor(res, data){
 		this._data = data;
+		this._res = res;
+		
 	}
 	
 	save() {
@@ -11,25 +13,27 @@ export default class Films {
 			_id: new mongoose.Types.ObjectId(),
 			name: this._data.name,
 			year: this._data.year,
-			duration: this._data.duration
+			duration: this._data.duration,
+			shows: []
 		});
 		
 		film.save((err) => {
 			if (err) {
-				console.log(err);
+				this._res.send("Error occured");
+				// TODO: Need to send error to log
 			} else {
-				console.log("Successfully saved in DB")
+				this._res.send("Cinema successfully saved in DB")
 			}
 		});
 	}
 	
-	into(res) {
-		Film.find({}, (err, films) => {
+	into() {
+		Film.find({}).select('-__v').populate('shows', 'name').exec((err, films) => {
 			if (err) {
-				res.send('No data found');
+				this._res.send('No data found');
 			}
 			else {
-				res.json(films);
+				this._res.json(films);
 			}
 		});
 	}

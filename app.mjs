@@ -14,8 +14,8 @@ new Connection();
 let jsonParser = bodyParser.json();
 
 app.get('/films', (req, res)  => {
-	let films = new Films( );
-	films.into(res);
+	let films = new Films(res);
+	films.into();
 });
 
 app.post('/films', jsonParser, (req, res) => {
@@ -41,7 +41,7 @@ app.post('/halls', jsonParser, (req, res) => {
 })
 
 app.get('/cinemas', (req, res)  => {
-	let cinemas = new Cinemas( res);
+	let cinemas = new Cinemas(res);
 	cinemas.into();
 });
 
@@ -52,29 +52,19 @@ app.post('/cinemas', jsonParser, (req, res) => {
 	
 	let cinemas = new Cinemas(res, req.body);
 	cinemas.save();
-	try {
-		cinemas.save();
-		//res.send('Cinema successfully saved to DB')
-	}
-	catch (err){
-		//if (err instanceof mongoose.Error.ValidationError){
-			res.send('Incorrect data')
-		//}
-	}
 })
 
 app.get('/shows', (req, res)  => {
-	let shows = new Shows( );
-	shows.into(res);
+	let shows = new Shows(res);
+	shows.into();
 });
 
 app.post('/shows', jsonParser, (req, res) => {
 	if (!req.body) {
 		return res.sendStatus(400)
 	}
-	let shows = new Shows(req.body);
+	let shows = new Shows(res, req.body);
 	shows.save();
-	res.end();
 })
 
 app.listen(3000, () => {

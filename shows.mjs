@@ -1,33 +1,52 @@
 import mongoose from 'mongoose';
-import {Show} from './models.mjs';
+import {ShowsSchema, FilmsSchema} from './schemas.mjs';
+import {Show, Film} from './models.mjs';
 
 export default class Shows {
-	constructor(data=null){
+	constructor(res, data=null){
 		this._data = data;
+		this._res = res;
 	}
 	
 	save() {
 		let show = new Show({
 			_id: new mongoose.Types.ObjectId(),
-			startAt: Date.parse(this._data.startAt)
+			startAt: Date.parse(this._data.startAt),
+			film: this._data.film
 		});
 		
 		show.save((err) => {
 			if (err) {
-				console.log(err);
+				this._res.send("Error occured");
+				// TODO: Need to send error to log
 			} else {
-				console.log("Show Successfully saved in DB")
+				Film.findById(this._data.film, (err, film) => {
+					if (err) {
+						this._res.send("Error occured");
+						// TODO: Need to send error to log
+					} else {
+						film.shows.push(show._id);
+						film.save((err) => {
+							if (err) {
+								this._res.send("Error occured");
+								// TODO: Need to send error to log
+							} else {
+								this._res.send("Show was successfully saved");
+							}
+						});
+					}
+				});
 			}
-		});
+		})
 	}
 	
-	into(res) {
-		Show.find({}, (err, shows) => {
+	into() {
+		Show.find({}).select('-__v').populate('film', 'name').exec((err, shows) => {
 			if (err) {
-				res.send('No data found');
+				this._res.send('No data found');
 			}
 			else {
-				res.json(shows);
+				this._res.json(shows);
 			}
 		});
 	}

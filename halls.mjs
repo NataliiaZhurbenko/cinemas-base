@@ -42,7 +42,7 @@ export default class Halls {
 	}
 
 	into() {
-		Hall.find({}).populate('cinema').exec((err, halls) => {
+		Hall.find({}).select('-__v').populate('cinema', 'name').exec((err, halls) => {
 			if (err) {
 				this._res.send('No data found');
 			}
