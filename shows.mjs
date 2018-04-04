@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import {ShowsSchema, FilmsSchema} from './schemas.mjs';
-import {Show, Film} from './models.mjs';
+import {ShowsSchema, FilmsSchema, HallsSchema} from './schemas.mjs';
+import {Show, Film, Hall} from './models.mjs';
 
 export default class Shows {
 	constructor(res, data=null){
@@ -12,7 +12,8 @@ export default class Shows {
 		let show = new Show({
 			_id: new mongoose.Types.ObjectId(),
 			startAt: Date.parse(this._data.startAt),
-			film: this._data.film
+			film: this._data.film,
+			hall: this._data.hall
 		});
 		
 		show.save((err) => {
@@ -30,6 +31,21 @@ export default class Shows {
 							if (err) {
 								this._res.send("Error occured");
 								// TODO: Need to send error to log
+							}
+						});
+					}
+				});
+				
+				Hall.findById(this._data.hall, (err, hall) => {
+					if (err) {
+						this._res.send("Error occured");
+						// TODO: Need to send error to log
+					} else {
+						hall.shows.push(show._id);
+						hall.save((err) => {
+							if (err) {
+								this._res.send("Error occured");
+								// TODO: Need to send error to log
 							} else {
 								this._res.send("Show was successfully saved");
 							}
@@ -41,7 +57,7 @@ export default class Shows {
 	}
 	
 	into() {
-		Show.find({}).select('-__v').populate('film', 'name').exec((err, shows) => {
+		Show.find({}).select('-__v').populate('film', 'name').populate('hall', 'name').exec((err, shows) => {
 			if (err) {
 				this._res.send('No data found');
 			}

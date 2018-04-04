@@ -15,7 +15,8 @@ const HallsSchema = new Schema({
 	_id: ObjectId,
 	name: String,
 	capacity: Number,
-	cinema: {type:ObjectId, ref: 'Cinema'}
+	cinema: {type:ObjectId, ref: 'Cinema'},
+	shows: [{type:ObjectId, ref: 'Show'}]
 });
 
 const FilmsSchema = new Schema({
